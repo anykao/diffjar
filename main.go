@@ -29,7 +29,7 @@ var err error
 
 const (
 	// Version number
-	VERSION = "0.01"
+    VERSION = "0.01"
 	// Scan at up to this size in file for '\0' in test for binary file
 	BINARY_CHECK_SIZE = 65536
 	// default number of context lines to display
@@ -116,7 +116,7 @@ func DiffContent(zipa, zipb *zip.Reader, brief bool, skips []string) string {
 					} else if strings.HasSuffix(a.Name, "class") {
 						diff := godiff(string(jadfile(data1)), string(jadfile(data2)))
 						fmt.Fprintf(&buf, diff)
-					} else if check_binary(data1) {
+					} else if checkBinary(data1) {
 						fmt.Fprintln(&buf, "<<binary>>")
 					} else {
 						diff := godiff(string(data1), string(data2))
@@ -237,7 +237,7 @@ func PostDiff(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, diff)
 }
 
-func min_int(a, b int) int {
+func minInt(a, b int) int {
 	if a < b {
 		return a
 	}
@@ -245,14 +245,14 @@ func min_int(a, b int) int {
 }
 
 // check if file is binary
-func check_binary(data []byte) bool {
+func checkBinary(data []byte) bool {
 	if data == nil {
 		return false
 	}
 	if len(data) == 0 {
 		return false
 	}
-	if bytes.IndexByte(data[0:min_int(len(data), BINARY_CHECK_SIZE)], 0) >= 0 {
+	if bytes.IndexByte(data[0:minInt(len(data), BINARY_CHECK_SIZE)], 0) >= 0 {
 		return true
 	}
 	return false
